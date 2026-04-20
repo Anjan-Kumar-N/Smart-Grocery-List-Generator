@@ -1,33 +1,65 @@
-🛒 Smart Grocery List Generator
+# 🛒 Smart Grocery List Generator
 
-A Flask web application that detects grocery items from kitchen images using a custom **YOLOv8** model, then calculates the groceries still needed by comparing detections with the target stock in `inventory.json`.
+An AI-powered full-stack web application that detects grocery items from kitchen images using a custom **YOLOv8** model and generates a dynamic list of required groceries by comparing detections with predefined inventory targets.
 
-✅ User sign-up & login (Flask-Login)  
-✅ Upload one or more kitchen images  
-✅ Detect grocery items using YOLOv8 / Ultralytics  
-✅ Measure detected quantities as pieces, grams, or kg  
-✅ Generate a needed-groceries list from target inventory levels  
-✅ Download the needed list as CSV or PDF  
-✅ Responsive UI with Bootstrap 5 & Animate.css  
+---
 
-## Quantity logic
+## 🚀 Key Features
 
-The model only detects visible grocery items. Needed groceries are calculated in the app layer:
+- 🔐 User authentication (Flask-Login)  
+- 🖼️ Upload one or multiple kitchen images  
+- 🤖 Grocery detection using **YOLOv8 (Ultralytics)**  
+- ⚖️ Quantity estimation in pieces, grams, or kilograms  
+- 📊 Automatic calculation of missing groceries based on target inventory  
+- 📄 Export results as **CSV or PDF**  
+- 🎨 Responsive UI with Bootstrap 5 & Animate.css  
 
-1. YOLO detects item names and bounding boxes.
-2. `ITEM_QUANTITY_RULES` in `app.py` decides whether each item is counted from box area as pieces, estimated by area in grams, or treated as kg.
-3. `inventory.json` stores the target quantity for each grocery.
-4. The app subtracts detected quantity from target quantity and shows the missing amount.
+---
 
-This means you can tune target groceries without retraining the model.
+## 🧠 How It Works
 
-For piece-based groceries, `area_per_piece` is an approximate normalized box area learned from the current dataset labels. It helps when YOLO returns one large box around multiple pieces, but accurate counting still needs training labels with one box per visible item.
+1. **Object Detection**  
+   YOLOv8 detects grocery items from uploaded images.
 
-## Run
+2. **Quantity Estimation**  
+   - Uses bounding box area to estimate quantity  
+   - Rules defined in `ITEM_QUANTITY_RULES`  
+   - Supports:
+     - Piece-based items  
+     - Weight-based estimation (grams/kg)
+
+3. **Inventory Comparison**  
+   - `inventory.json` stores target quantities  
+   - Detected quantities are subtracted from targets  
+
+4. **Output Generation**  
+   - Displays missing items  
+   - Allows export as CSV/PDF  
+
+---
+
+## ⚙️ Quantity Logic
+
+- Detection is based only on visible items  
+- Quantity is inferred using bounding box area  
+- `area_per_piece` is an approximate value derived from dataset annotations  
+
+⚠️ **Note:**  
+Accurate counting requires training data with one bounding box per item.
+
+---
+
+## 🧩 Tech Stack
+
+- **Backend:** Flask  
+- **AI/ML:** YOLOv8 (Ultralytics)  
+- **Frontend:** HTML, CSS, Bootstrap 5, Animate.css  
+- **Data Handling:** JSON (inventory), CSV, PDF (FPDF)  
+
+---
+
+## ▶️ Run Locally
 
 ```bash
 pip install -r requirements.txt
 python app.py
-```
-
-
