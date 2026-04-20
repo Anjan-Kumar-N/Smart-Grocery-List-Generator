@@ -8,8 +8,6 @@ import json
 import csv
 import math
 from fpdf import FPDF
-from ultralytics import YOLO
-import cv2
 from uuid import uuid4
 
 # ============================================================
@@ -44,6 +42,9 @@ MODEL_PATH = os.environ.get(
 )
 INVENTORY_PATH = os.path.join(BASE_DIR, 'inventory.json')
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
+model = None
+cv2 = None
 
 # ============================================================
 # Categories
@@ -229,11 +230,33 @@ with app.app_context():
 # Load Model
 # ============================================================
 
-model = YOLO(MODEL_PATH)
+def get_model():
+    global model
+
+    if model is None:
+        from ultralytics import YOLO
+        model = YOLO(MODEL_PATH)
+
+    return model
+
+
+def get_cv2():
+    global cv2
+
+    if cv2 is None:
+        import cv2 as cv2_module
+        cv2 = cv2_module
+
+    return cv2
 
 # ============================================================
 # Signup
 # ============================================================
+
+@app.route('/healthz')
+def healthz():
+    return "ok", 200
+
 
 @app.route('/signup', methods=['GET','POST'])
 def signup():
@@ -318,13 +341,16 @@ def index():
         quantity_required = {}
         annotated_images = []
 
+        inference_model = get_model()
+        cv2_module = get_cv2()
+
         for image in images:
 
             filename = build_file_name(image.filename)
             path = os.path.join(UPLOAD_FOLDER, filename)
             image.save(path)
 
-            results = model(path)
+            results = inference_model(path)
 
             for result in results:
 
@@ -359,9 +385,9 @@ def index():
                 annotated_filename
             )
 
-            cv2.imwrite(
+            cv2_module.imwrite(
                 annotated_path,
-                cv2.cvtColor(annotated,cv2.COLOR_RGB2BGR)
+                cv2_module.cvtColor(annotated,cv2_module.COLOR_RGB2BGR)
             )
 
             annotated_images.append(annotated_filename)
