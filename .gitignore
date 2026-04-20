@@ -1,0 +1,12 @@
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+instance/*.db
+static/uploads/
+static/grocery_list.csv
+static/grocery_list.pdf
+
+.env

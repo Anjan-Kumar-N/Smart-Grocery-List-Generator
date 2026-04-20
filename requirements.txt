@@ -7,3 +7,4 @@ ultralytics
 opencv-python
 fpdf2
 albumentations
+gunicorn

@@ -17,10 +17,19 @@ from uuid import uuid4
 # ============================================================
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+INSTANCE_DIR = os.path.join(BASE_DIR, "instance")
+os.makedirs(INSTANCE_DIR, exist_ok=True)
 
 app = Flask(__name__)
-app.secret_key = 'supersecretkey'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
+app.secret_key = os.environ.get("SECRET_KEY", "dev-only-change-me")
+
+default_sqlite_uri = f"sqlite:///{os.path.join(INSTANCE_DIR, 'users.db')}"
+database_uri = os.environ.get("DATABASE_URL", default_sqlite_uri)
+if database_uri.startswith("postgres://"):
+    database_uri = database_uri.replace("postgres://", "postgresql://", 1)
+
+app.config['SQLALCHEMY_DATABASE_URI'] = database_uri
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db = SQLAlchemy(app)
 
@@ -29,7 +38,10 @@ login_manager.init_app(app)
 login_manager.login_view = 'login'
 
 UPLOAD_FOLDER = os.path.join(BASE_DIR, 'static', 'uploads')
-MODEL_PATH = os.path.join(BASE_DIR, 'runs', 'detect', 'train_milk_ghee', 'weights', 'best.pt')
+MODEL_PATH = os.environ.get(
+    "MODEL_PATH",
+    os.path.join(BASE_DIR, 'runs', 'detect', 'train_milk_ghee', 'weights', 'best.pt')
+)
 INVENTORY_PATH = os.path.join(BASE_DIR, 'inventory.json')
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
@@ -208,6 +220,10 @@ class User(UserMixin, db.Model):
 @login_manager.user_loader
 def load_user(user_id):
     return db.session.get(User, int(user_id))
+
+
+with app.app_context():
+    db.create_all()
 
 # ============================================================
 # Load Model
@@ -567,8 +583,6 @@ def download_pdf():
 # ============================================================
 
 if __name__ == '__main__':
-
-    with app.app_context():
-        db.create_all()
-
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", "5000"))
+    debug = os.environ.get("FLASK_DEBUG", "0") == "1"
+    app.run(host="0.0.0.0", port=port, debug=debug)
