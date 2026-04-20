@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Sign Up — Smart Grocery List Generator{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+  <div class="auth-card card-glass animate__animated animate__fadeInDown">
+    <h2 class="text-center mb-3">🧺 Create your account</h2>
+    <p class="text-center muted mb-4">Join now to start generating your smart grocery lists!</p>
+
+    <form method="POST">
+      <div class="mb-3">
+        <label class="form-label text-light">Username</label>
+        <input type="text" class="form-control form-control-dark" name="username" placeholder="Choose a username" required>
+      </div>
+      <div class="mb-4">
+        <label class="form-label text-light">Password</label>
+        <input type="password" class="form-control form-control-dark" name="password" placeholder="Create a password" required>
+      </div>
+
+      <div class="d-flex justify-content-center gap-3">
+        <button class="btn btn-outline-accent px-4 py-2">Sign Up</button>
+        <a href="{{ url_for('login') }}" class="btn btn-ghost px-4 py-2">Login Instead</a>
+      </div>
+    </form>
+
+    
+  </div>
+</div>
+{% endblock %}

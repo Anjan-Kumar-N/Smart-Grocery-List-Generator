@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+{% block title %}Smart Grocery List Generator{% endblock %}
+
+{% block content %}
+<div class="results-container text-center">
+
+<h1 class="fw-bold text-mint mb-2">🛒 Smart Grocery List Generator</h1>
+<p class="text-bright mb-4">
+Here’s what we found in your kitchen — and what you still need!
+</p>
+
+<!-- Uploaded Images -->
+
+{% if annotated_images %}
+<div class="d-flex flex-wrap justify-content-center gap-3 mb-4">
+{% for img in annotated_images %}
+<img src="{{ url_for('static', filename='uploads/' ~ img) }}" class="detected-img">
+{% endfor %}
+</div>
+{% endif %}
+
+<!-- ================= Detected Items ================= -->
+
+<h3 class="text-mint mb-3">🥦 Detected Items</h3>
+
+{% for category,items in detected_categories.items() %}
+{% if items|length > 0 %}
+
+<h5 class="text-light mt-4">{{ category }}</h5>
+
+<table class="table table-dark table-striped table-hover align-middle mx-auto" style="max-width:520px;">
+
+<thead>
+<tr class="text-mint">
+<th>#</th>
+<th>Item</th>
+<th>Quantity</th>
+</tr>
+</thead>
+
+<tbody>
+{% for item in items %}
+<tr>
+<td>{{ loop.index }}</td>
+<td>{{ item.name }}</td>
+<td>{{ item.quantity }}</td>
+</tr>
+{% endfor %}
+</tbody>
+
+</table>
+
+{% endif %}
+{% endfor %}
+
+<!-- ================= Required Grocery List ================= -->
+
+<h3 class="text-mint mt-5 mb-3">📝 Need Groceries</h3>
+
+{% set required_found = namespace(value=false) %}
+
+{% for category,items in required_categories.items() %}
+{% if items|length > 0 %}
+
+{% set required_found.value = true %}
+
+<h5 class="text-light mt-4">{{ category }}</h5>
+
+<table class="table table-dark table-striped table-hover align-middle mx-auto" style="max-width:520px;">
+
+<thead>
+<tr class="text-mint">
+<th>#</th>
+<th>Item</th>
+<th>Needed Quantity</th>
+</tr>
+</thead>
+
+<tbody>
+{% for item in items %}
+<tr>
+<td>{{ loop.index }}</td>
+<td>{{ item.name }}</td>
+<td>{{ item.quantity }}</td>
+</tr>
+{% endfor %}
+</tbody>
+
+</table>
+
+{% endif %}
+{% endfor %}
+
+{% if not required_found.value %}
+<p class="text-success fs-5">✅ Your kitchen is fully stocked!</p>
+{% endif %}
+
+<!-- ================= Download Buttons ================= -->
+
+<div class="text-center mt-4">
+
+<a href="{{ url_for('download_csv') }}" class="btn btn-outline-accent me-3 px-4">
+⬇️ CSV
+</a>
+
+<a href="{{ url_for('download_pdf') }}" class="btn btn-outline-accent px-4">
+📄 PDF
+</a>
+
+</div>
+
+<!-- ================= Back Button ================= -->
+
+<div class="text-center mt-4">
+<a href="{{ url_for('index') }}" class="btn btn-ghost">
+⬅️ Back to Upload
+</a>
+</div>
+
+</div>
+{% endblock %}

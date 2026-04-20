@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="page-center">
+  <div class="upload-card">
+
+    <h2 class="text-mint mb-2">🥕 Smart Grocery List Generator</h2>
+    <p class="text-light mb-4">
+      Upload Kitchen or Fridge Images — we’ll Detect Items and Tell you What’s Missing!
+    </p>
+
+    <form method="POST" enctype="multipart/form-data">
+
+      <!-- MULTIPLE IMAGE INPUT -->
+      <input
+        type="file"
+        name="images"
+        accept="image/*"
+        class="form-control mx-auto file-input mb-3"
+        multiple
+        required
+      >
+
+      <button type="submit" class="btn btn-outline-accent">
+        Generate Grocery List
+      </button>
+
+    </form>
+
+  </div>
+</div>
+
+{% endblock %}

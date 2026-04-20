@@ -1,0 +1,6 @@
+train: E:/PBL/smart_grocery_list/datasets/grocery/images/train
+val: E:/PBL/smart_grocery_list/datasets/grocery/images/val
+
+
+nc: 19
+names: ['apple', 'capsicum','carrot','chana','chanadal','cucumber','grapes','greengram','groundnut','ladyfinger','lemon','moongdal','orange','paneer','pomegranate','tomato','turnip','milk','ghee']

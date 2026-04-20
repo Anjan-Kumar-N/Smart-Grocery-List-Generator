@@ -1,0 +1,9 @@
+Flask
+Flask-Login
+Flask-SQLAlchemy
+torch
+pandas
+ultralytics
+opencv-python
+fpdf2
+albumentations

@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="auth-page">
+  <div class="auth-card">
+    <h2 class="text-mint mb-3">👋 Welcome back!</h2>
+    <p class="login-subtext">Login to generate your smart grocery list</p>
+
+    <form action="{{ url_for('login') }}" method="POST" class="login-form">
+      <input type="text" name="username" class="form-control-dark" placeholder="Enter username" required>
+      <input type="password" name="password" class="form-control-dark" placeholder="Enter password" required>
+      
+      <button type="submit" class="btn btn-outline-accent full-width">Login</button>
+      <a href="{{ url_for('signup') }}" class="btn btn-ghost full-width">Create Account</a>
+    </form>
+
+    
+  </div>
+</div>
+{% endblock %}
